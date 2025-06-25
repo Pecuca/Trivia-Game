@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Trivia Frenzy</title>
+</head>
+<body>
+    <h1>Bienvenido a Trivia Frenzy!</h1>
+    <p>Pon a prueba tus conocimientos con nuestras divertidas preguntas de trivia.</p>
+    <form id="player-form">
+        <label for="player-name">¿Cómo te llamas?</label>
+        <input type="text" id="player-name" name="player-name" required>
+        <button type="submit">Comenzar</button>
+    </form>
+
+    <form id="settings-form" style="display:none; margin-top:20px;">
+        <label for="difficulty">Selecciona la dificultad:</label>
+        <select id="difficulty" name="difficulty" required>
+            <option value="">--Elige una opción--</option>
+            <option value="facil">Fácil</option>
+            <option value="medio">Medio</option>
+            <option value="dificil">Difícil</option>
+        </select>
+        <br><br>
+        <label for="category">Selecciona la categoría:</label>
+        <select id="category" name="category" required>
+            <option value="">--Elige una opción--</option>
+            <option value="general">General</option>
+            <option value="ciencia">Ciencia</option>
+            <option value="historia">Historia</option>
+            <option value="deportes">Deportes</option>
+        </select>
+        <br><br>
+        <label for="num-questions">¿Cuántas preguntas quieres jugar? (5-20):</label>
+        <input type="number" id="num-questions" name="num-questions" min="5" max="20" value="10" required>
+        <br><br>
+        <button type="submit">Empezar Juego</button>
+    </form>
+
+    <div id="progress-counter" style="display:none; margin-top:20px;">
+        Pregunta <span id="current-question">1</span> de <span id="total-questions">10</span>
+    </div>
+
+    <div id="timer" style="display:none; margin-top:10px;">
+        Tiempo restante: <span id="time-left">20</span> segundos
+    </div>
+
+    <div id="results-screen" style="display:none; margin-top:30px;">
+        <h2>Resultados Finales</h2>
+        <p>¡Gracias por jugar, <span id="result-player-name"></span>!</p>
+        <ul>
+            <li>Puntuación total: <span id="result-score"></span></li>
+            <li>Respuestas correctas: <span id="result-correct"></span></li>
+            <li>Respuestas incorrectas: <span id="result-incorrect"></span></li>
+            <li>Porcentaje de aciertos: <span id="result-percentage"></span>%</li>
+            <li>Tiempo promedio por pregunta: <span id="result-avg-time"></span> segundos</li>
+        </ul>
+        <button id="play-same-config">Jugar de nuevo (misma configuración)</button>
+        <button id="play-new-config">Jugar de nuevo (nueva configuración)</button>
+        <button id="end-game">Finalizar juego</button>
+    </div>
+</body>
+</html>
