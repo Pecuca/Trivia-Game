@@ -3,61 +3,121 @@
 <head>
     <meta charset="UTF-8" />
     <title>Trivia Frenzy</title>
+    <link rel="preload" href="./assets/fonts/m6x11plus.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href="./assets/img/Balatro_Menu_Background.mp4" as="video" type="video/mp4" crossorigin>
+    <link rel="stylesheet" href="./styles.css">
+    <script src="scripts.js" defer></script>
+    <style>
+        .player-form-container select,
+        .player-form-container input[type="number"] {
+            color: #222 !important; /* Always black */
+        }
+
+        /* Placeholder style for select (when nothing is selected) */
+        .player-form-container select:invalid {
+            color: #888 !important; /* Gray for placeholder */
+        }
+
+        /* Force options to be black as well (works in most browsers) */
+        .player-form-container select option {
+            color: #222;
+        }
+    </style>
 </head>
 <body>
-    <h1>Bienvenido a Trivia Frenzy!</h1>
-    <p>Pon a prueba tus conocimientos con nuestras divertidas preguntas de trivia.</p>
-    <form id="player-form">
-        <label for="player-name">¿Cómo te llamas?</label>
-        <input type="text" id="player-name" name="player-name" required>
-        <button type="submit">Comenzar</button>
-    </form>
+    <video autoplay muted loop id="background-video-menu">
+        <source src="./assets/img/Balatro_Menu_Background.mp4" type="video/mp4">
+        Tu navegador no soporta el video de fondo.
+    </video>
+    <video autoplay muted loop id="background-video-game" style="opacity:0; transition:opacity 1s;">
+        <source src="./assets/img/Balatro_InGame_Background.mp4" type="video/mp4">
+        Tu navegador no soporta el video de fondo.
+    </video>
+    <img id="logo" src="assets/img/Trivia Frenzy Logo.png" alt="Trivia Frenzy Logo">
+    <h1 id="main-title" style="display:none;">
+        Welcome to Trivia Frenzy, <span id="player-name-header"></span>!
+    </h1>
+    <p id="main-desc" style="display:none;">Test your knowledge with our fun trivia questions.</p>
 
-    <form id="settings-form" style="display:none; margin-top:20px;">
-        <label for="difficulty">Selecciona la dificultad:</label>
-        <select id="difficulty" name="difficulty" required>
-            <option value="">--Elige una opción--</option>
-            <option value="facil">Fácil</option>
-            <option value="medio">Medio</option>
-            <option value="dificil">Difícil</option>
-        </select>
-        <br><br>
-        <label for="category">Selecciona la categoría:</label>
-        <select id="category" name="category" required>
-            <option value="">--Elige una opción--</option>
-            <option value="general">General</option>
-            <option value="ciencia">Ciencia</option>
-            <option value="historia">Historia</option>
-            <option value="deportes">Deportes</option>
-        </select>
-        <br><br>
-        <label for="num-questions">¿Cuántas preguntas quieres jugar? (5-20):</label>
-        <input type="number" id="num-questions" name="num-questions" min="5" max="20" value="10" required>
-        <br><br>
-        <button type="submit">Empezar Juego</button>
-    </form>
-
-    <div id="progress-counter" style="display:none; margin-top:20px;">
-        Pregunta <span id="current-question">1</span> de <span id="total-questions">10</span>
+    <!-- Screen 1: Name -->
+    <div class="player-form-container" id="player-form-container">
+        <form id="player-form">
+            <label for="player-name">What's your name?</label>
+            <input type="text" id="player-name" name="player-name" required minlength="2" maxlength="20" placeholder="Enter your name here">
+            <button type="submit" class="btn btn--blue">ENTER</button>
+        </form>
     </div>
 
-    <div id="timer" style="display:none; margin-top:10px;">
-        Tiempo restante: <span id="time-left">20</span> segundos
+    <!-- Screen 2: Settings (hidden at start) -->
+    <div class="player-form-container" id="settings-form-container" style="display:none;">
+        <form id="settings-form" style="margin-top:0;">
+            <label for="difficulty">Select difficulty:</label>
+            <select id="difficulty" name="difficulty" required>
+                <option value="" disabled selected hidden>Select difficulty</option>
+            </select>
+            <label for="category">Select category:</label>
+            <select id="category" name="category" required>
+                <option value="" disabled selected hidden>Select category</option>
+            </select>
+            <label for="num-questions">How many questions do you want to play? (5-20):</label>
+            <input type="number" id="num-questions" name="num-questions" min="5" max="20" value="10" required>
+        </form>
+    </div>
+    <div class="player-form-container" id="play-button-container" style="display:none;">
+        <button type="submit" form="settings-form" class="btn btn--green play-btn">PLAY</button>
+    </div>
+
+    <div id="game-area" style="display:none;">
+        <div id="game-info-box" class="player-form-container">
+            <div>
+                <div class="game-info-label">Difficulty</div>
+                <div class="game-info-value" id="game-difficulty"></div>
+            </div>
+            <div>
+                <div class="game-info-label">Question</div>
+                <div class="game-info-value">
+                    <span id="current-question">1</span> / <span id="total-questions">10</span>
+                </div>
+            </div>
+            <div>
+                <div class="game-info-label">Score</div>
+                <div class="game-info-value" id="score-box">0</div>
+            </div>
+            <div>
+                <div class="game-info-label">Time</div>
+                <div class="game-info-value" id="timer-box">20s</div>
+            </div>
+            <div style="display:flex; gap:12px; margin-top:18px;">
+                <button id="exit-to-name" class="btn btn--red">EXIT</button>
+                <button id="give-up" class="btn btn--orange">GIVE UP</button>
+            </div>
+        </div>
+        <div id="question-container">
+            <div id="question-text"></div>
+            <div id="answers"></div>
+        </div>
     </div>
 
     <div id="results-screen" style="display:none; margin-top:30px;">
-        <h2>Resultados Finales</h2>
-        <p>¡Gracias por jugar, <span id="result-player-name"></span>!</p>
+        <h2>Final Results</h2>
+        <p>Thank you for playing, <span id="result-player-name"></span>!</p>
         <ul>
-            <li>Puntuación total: <span id="result-score"></span></li>
-            <li>Respuestas correctas: <span id="result-correct"></span></li>
-            <li>Respuestas incorrectas: <span id="result-incorrect"></span></li>
-            <li>Porcentaje de aciertos: <span id="result-percentage"></span>%</li>
-            <li>Tiempo promedio por pregunta: <span id="result-avg-time"></span> segundos</li>
+            <li>Total score: <span id="result-score"></span></li>
+            <li>Correct answers: <span id="result-correct"></span></li>
+            <li>Incorrect answers: <span id="result-incorrect"></span></li>
+            <li>Accuracy: <span id="result-percentage"></span>%</li>
+            <li>Average time per question: <span id="result-avg-time"></span> seconds</li>
         </ul>
-        <button id="play-same-config">Jugar de nuevo (misma configuración)</button>
-        <button id="play-new-config">Jugar de nuevo (nueva configuración)</button>
-        <button id="end-game">Finalizar juego</button>
+        <button id="play-same-config">Play again (same settings)</button>
+        <button id="play-new-config">Play again (new settings)</button>
+        <button id="end-game">End game and return to menu</button>
     </div>
+
+    <audio id="bg-music" src="./assets/audio/Balatro OST - Main Theme.mp3" loop></audio>
+    <div id="music-controls" style="display:none;">
+        <button id="music-toggle" title="Mute music" style="font-size:22px; background:none; border:none; color:#fff; cursor:pointer;">🔊</button>
+        <input id="music-volume" type="range" min="0" max="1" step="0.01" value="0.2" style="width:100px;">
+    </div>
+    <div id="bg-fade-overlay"></div>
 </body>
 </html>
