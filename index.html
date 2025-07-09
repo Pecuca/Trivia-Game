@@ -4,42 +4,47 @@
     <meta charset="UTF-8" />
     <title>Trivia Frenzy</title>
     <link rel="preload" href="./assets/fonts/m6x11plus.ttf" as="font" type="font/ttf" crossorigin>
-    <link rel="preload" href="./assets/img/Balatro_Menu_Background.mp4" as="video" type="video/mp4" crossorigin>
+    <link rel="preload" href="./assets/img/Balatro_Background_Menu.mp4" as="video" type="video/mp4" crossorigin>
     <link rel="stylesheet" href="./styles.css">
     <script src="scripts.js" defer></script>
     <style>
         .player-form-container select,
         .player-form-container input[type="number"] {
-            color: #222 !important; /* Always black */
+            color: #222 !important; /* Siempre negro */
         }
 
-        /* Placeholder style for select (when nothing is selected) */
+        /* Estilo para el placeholder del select (cuando no hay nada seleccionado) */
         .player-form-container select:invalid {
-            color: #888 !important; /* Gray for placeholder */
+            color: #888 !important; /* Gris para el placeholder */
         }
 
-        /* Force options to be black as well (works in most browsers) */
+        /* Forzar que las opciones sean negras también (funciona en la mayoría de los navegadores) */
         .player-form-container select option {
             color: #222;
         }
     </style>
 </head>
 <body>
+    <!-- Video de fondo para el menú -->
     <video autoplay muted loop id="background-video-menu">
-        <source src="./assets/img/Balatro_Menu_Background.mp4" type="video/mp4">
+        <source src="./assets/img/Balatro_Background_Menu.mp4" type="video/mp4">
         Tu navegador no soporta el video de fondo.
     </video>
+
+    <!-- Video de fondo para el juego -->
     <video autoplay muted loop id="background-video-game" style="opacity:0; transition:opacity 1s;">
-        <source src="./assets/img/Balatro_InGame_Background.mp4" type="video/mp4">
+        <source src="./assets/img/Balatro_Background_Ingame.mp4" type="video/mp4">
         Tu navegador no soporta el video de fondo.
     </video>
+
+    <!-- Logo y título principal -->
     <img id="logo" src="assets/img/Trivia Frenzy Logo.png" alt="Trivia Frenzy Logo">
     <h1 id="main-title" style="display:none;">
         Welcome to Trivia Frenzy, <span id="player-name-header"></span>!
     </h1>
-    <p id="main-desc" style="display:none;">Test your knowledge with our fun trivia questions.</p>
+    <p id="main-desc" style="display:none;">Test your knowledge with our fun trivia questions</p>
 
-    <!-- Screen 1: Name -->
+    <!-- Pantalla 1: Nombre del jugador -->
     <div class="player-form-container" id="player-form-container">
         <form id="player-form">
             <label for="player-name">What's your name?</label>
@@ -48,14 +53,14 @@
         </form>
     </div>
 
-    <!-- Screen 2: Settings (hidden at start) -->
+    <!-- Pantalla 2: Configuración -->
     <div class="player-form-container" id="settings-form-container" style="display:none;">
         <form id="settings-form" style="margin-top:0;">
-            <label for="difficulty">Select difficulty:</label>
+            <label for="difficulty">Difficulty:</label>
             <select id="difficulty" name="difficulty" required>
                 <option value="" disabled selected hidden>Select difficulty</option>
             </select>
-            <label for="category">Select category:</label>
+            <label for="category">Category:</label>
             <select id="category" name="category" required>
                 <option value="" disabled selected hidden>Select category</option>
             </select>
@@ -67,6 +72,7 @@
         <button type="submit" form="settings-form" class="btn btn--green play-btn">PLAY</button>
     </div>
 
+    <!-- Pantalla 3: Juego -->
     <div id="game-area" style="display:none;">
         <div id="game-info-box" class="player-form-container">
             <div>
@@ -77,6 +83,8 @@
                 <div class="game-info-label">Question</div>
                 <div class="game-info-value">
                     <span id="current-question">1</span> / <span id="total-questions">10</span>
+                    <span style="margin-left:10px; font-size:0.95em; color:#3c9772;">✔ <span id="game-correct-inline">0</span></span>
+                    <span style="margin-left:6px; font-size:0.95em; color:#f6483d;">✘ <span id="game-incorrect-inline">0</span></span>
                 </div>
             </div>
             <div>
@@ -98,26 +106,29 @@
         </div>
     </div>
 
-    <div id="results-screen" style="display:none; margin-top:30px;">
-        <h2>Final Results</h2>
-        <p>Thank you for playing, <span id="result-player-name"></span>!</p>
-        <ul>
-            <li>Total score: <span id="result-score"></span></li>
-            <li>Correct answers: <span id="result-correct"></span></li>
-            <li>Incorrect answers: <span id="result-incorrect"></span></li>
-            <li>Accuracy: <span id="result-percentage"></span>%</li>
-            <li>Average time per question: <span id="result-avg-time"></span> seconds</li>
-        </ul>
-        <button id="play-same-config">Play again (same settings)</button>
-        <button id="play-new-config">Play again (new settings)</button>
-        <button id="end-game">End game and return to menu</button>
+    <!-- Pantalla 4: Resultados -->
+    <div id="results-screen" class="player-form-container" style="display:none; margin-top:30px;">
+        <h2 id="results-title"></h2>
+        <div id="results-data">
+            <div class="result-info-box">Name: <span id="result-player-name"></span></div>
+            <div class="result-info-box">Score: <span id="result-score"></span></div>
+            <div class="result-info-box">Correct Answers: <span id="result-correct"></span></div>
+            <div class="result-info-box">Accuracy Percentage: <span id="result-percentage"></span></div>
+            <div class="result-info-box">Average Time per Question: <span id="result-avg-time"></span></div>
+        </div>
+        <div id="results-buttons-row">
+            <button id="play-same-config" class="btn btn--green">PLAY AGAIN</button>
+            <button id="play-new-config" class="btn btn--blue">CHANGE SETTINGS</button>
+        </div>
+        <div id="results-buttons-bottom">
+            <button id="end-game" class="btn btn--red">EXIT</button>
+        </div>
     </div>
 
     <audio id="bg-music" src="./assets/audio/Balatro OST - Main Theme.mp3" loop></audio>
     <div id="music-controls" style="display:none;">
-        <button id="music-toggle" title="Mute music" style="font-size:22px; background:none; border:none; color:#fff; cursor:pointer;">🔊</button>
+        <button id="music-toggle" title="Mute music" style="font-size:22px; background:none; border:none; color:#fff; cursor:pointer;"><img src="assets/img/Speaker.png" alt="Speaker"></img></button>
         <input id="music-volume" type="range" min="0" max="1" step="0.01" value="0.2" style="width:100px;">
     </div>
-    <div id="bg-fade-overlay"></div>
 </body>
 </html>
